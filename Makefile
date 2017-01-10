@@ -1,0 +1,111 @@
+WXVERSION = 3.0
+WXFLAGS  = -mthreads -DHAVE_W32API_H -D__WXMSW__ -D__WXDEBUG__\
+   	-D_UNICODE -IC:\wopt\wxWidgets-3.0.2\lib\gcc_dll\mswu \
+	-IC:\wopt\wxWidgets-3.0.2\include -DWXUSINGDLL -Wno-ctor-dtor-privacy\
+   	-pipe -fmessage-length=0  -std=gnu++11
+WXLIBS   = -mthreads -LC:\wopt\wxWidgets-3.0.2\lib\gcc_dll -lwxmsw30u_xrc \
+			-lwxmsw30u_html -lwxmsw30u_aui -lwxmsw30u_adv -lwxmsw30u_core -lwxbase30u_xml\
+		   	-lwxbase30u_net -lwxbase30u -lwxtiff -lwxjpeg -lwxpng \
+			-lwxzlib -lwxregexu -lwxexpat -lkernel32 -luser32 -lgdi32 \
+			-lcomdlg32 -lwxregexu -lwinspool -lwinmm -lshell32 -lcomctl32 \
+			-lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32
+INCDIR   = include
+SRCDIR   = src
+SRCDIRS  = wxGUI
+OBJDIR   = obj
+BINDIR   = bin
+LIBDIR   = lib
+EXEFILE  = Two23D 
+
+
+#Source Files to looks for
+SOURCES := $(wildcard $(SRCDIRS:%=src/%/*.cpp)) $(wildcard src/*.cpp)
+
+
+
+INCLUDES  = -Iinclude
+LINKDIR   = -L$(LIBDIR)
+OGLIB     = 
+GENLIBS   = 
+
+CXX       = g++
+CXXLIBS   =
+LDLIBS    = $(LINKDIR) $(DYNLIB) $(OGLIB) $(GENLIBS)
+
+
+CXXFLAGS  = -Wall $(INCLUDES) $(WXFLAGS) --std=c++11 $(CXXLIBS)
+LDFLAGS   = -std=c++11 $(LDLIBS) $(WXLIBS)
+
+
+
+#Target specific variables for Debug version.
+DFLAG    = -DDEBUG
+DBINDIR  =  $(BINDIR)/Debug
+DOBJDIR  =  $(OBJDIR)/Debug
+DEXE     =  $(DBINDIR)/$(EXEFILE)
+DOBJECTS =  $(addprefix $(DOBJDIR)/,$(SOURCES:$(SRCDIR)/%.cpp=%.o))
+
+
+#Target specific variables for Release version.
+RFLAG    = -DNDEBUG
+RBINDIR  =  $(BINDIR)/Release
+ROBJDIR  =  $(OBJDIR)/Release
+REXE     =  $(RBINDIR)/$(EXEFILE)
+ROBJECTS  = $(addprefix $(ROBJDIR)/,$(SOURCES:src/%.cpp=%.o))
+
+
+## Default build target Debug
+Debug: $(DEXE)
+
+
+$(DEXE) : $(DOBJECTS) | $(DBINDIR)
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+#This is magic I still haven't figured out
+$(DOBJDIR)/%.o: $(SRCDIR)/%.cpp | $(DOBJDIR)
+	$(CXX) -o $@ -c $< $(DFLAG) $(CXXFLAGS)
+
+
+
+
+Release: $(REXE)
+
+$(REXE) : $(ROBJECTS) | $(RBINDIR)
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+$(ROBJDIR)/%.o: $(SRCDIR)/%.cpp | $(ROBJDIR)
+	$(CXX) -c -o $@ $< $(RFLAG) $(CXXFLAGS)
+
+
+$(OBJDIR):
+	mkdir $(OBJDIR)
+
+$(BINDIR) :
+	mkdir $(BINDIR)
+
+
+$(DBINDIR): | $(BINDIR)
+	mkdir $(DBINDIR)
+
+$(DOBJDIR): | $(OBJDIR)
+	mkdir $(DOBJDIR) $(SRCDIRS:%=$(DOBJDIR)/%)
+
+
+$(RBINDIR): | $(BINDIR)
+	mkdir $(RBINDIR)
+
+$(ROBJDIR): | $(OBJDIR)
+	mkdir $(ROBJDIR) $(SRCDIRS:%=$(ROBJDIR)/%)
+
+
+clean:
+	rm -rf $(DOBJECTS) $(DEXE)
+
+cleanDebug:
+	rm $(DOBJECTS) $(DEXE)
+
+cleanRelease:
+	rm $(ROBJECTS) $(REXE)
+
+## Include auto-generated dependencies rules
+-include $(DOBJECTS:.o=.d)

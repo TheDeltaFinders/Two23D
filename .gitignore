@@ -1,0 +1,11 @@
+obj
+bin
+doc
+cbx
+.idea
+*.o
+*.swp
+*~
+__pycache__
+*.layout
+*.depend
