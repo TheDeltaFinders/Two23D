@@ -26,7 +26,7 @@ MainFrame::MainFrame(wxWindow* parent,wxWindowID id)
     CreateStatusBar();
     auto CenterFlag = wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL;
 
-    wxGridSizer* OutermostGridSizer = new wxGridSizer(wxEXPAND);
+    wxFlexGridSizer* OutermostGridSizer = new wxFlexGridSizer(wxEXPAND);
     AUISplittedPanel* SplittedPanel= new AUISplittedPanel(this);
     OutermostGridSizer->Add(SplittedPanel,1,wxALL|CenterFlag,5);
     SetSizer(OutermostGridSizer);

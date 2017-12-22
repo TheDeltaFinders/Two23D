@@ -1,7 +1,14 @@
 WXVERSION = 3.0
-
-WXFLAGS  := $$(wx-config --cxxflags)
-WXLIBS   := $$(wx-config --libs all)
+WXFLAGS  = -mthreads -DHAVE_W32API_H -D__WXMSW__ -D__WXDEBUG__\
+   	-D_UNICODE -IC:\wopt\wxWidgets-3.0.2\lib\gcc_dll\mswu \
+	-IC:\wopt\wxWidgets-3.0.2\include -DWXUSINGDLL -Wno-ctor-dtor-privacy\
+   	-pipe -fmessage-length=0  -std=gnu++11
+WXLIBS   = -mthreads -LC:\wopt\wxWidgets-3.0.2\lib\gcc_dll -lwxmsw30u_xrc \
+			-lwxmsw30u_html -lwxmsw30u_aui -lwxmsw30u_adv -lwxmsw30u_core -lwxbase30u_xml\
+		   	-lwxbase30u_net -lwxbase30u -lwxtiff -lwxjpeg -lwxpng \
+			-lwxzlib -lwxregexu -lwxexpat -lkernel32 -luser32 -lgdi32 \
+			-lcomdlg32 -lwxregexu -lwinspool -lwinmm -lshell32 -lcomctl32 \
+			-lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32
 INCDIR   = include
 SRCDIR   = src
 SRCDIRS  = wxGUI

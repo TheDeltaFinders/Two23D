@@ -16,7 +16,7 @@ AUISplittedPanel::AUISplittedPanel(wxWindow* parent,wxWindowID id,
 {
     //Ctor
     //Create the Panel
-	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+	Create(parent, wxID_ANY, wxDefaultPosition, wxSize(100,200), 0, _T("wxID_ANY"));
 	MainAUIManager = new wxAuiManager(this, wxAUI_MGR_DEFAULT);
 
 	LeftAUINBook = new wxAuiNotebook(this, ID_LeftAUINBook, wxPoint(23,167),
